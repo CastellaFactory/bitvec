@@ -5,7 +5,7 @@
 
 int main()
 {
-    bitvec<std::uint8_t, std::vector> bv;
+    /* bitvec<std::uint8_t, std::vector> bv; */
     bv.push_back(1);
     bv.push_back(0);
     bv.print();
