@@ -6,7 +6,9 @@
 int main()
 {
     /* bitvec<std::uint8_t, std::vector> bv; */
-    bv.push_back(1);
-    bv.push_back(0);
+    bitvec::bitvec bv;
+    for(auto i = 0; i < 64; ++i) {
+        bv.push_back(1);
+    }
     bv.print();
 }
