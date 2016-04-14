@@ -13,11 +13,11 @@ constexpr u64 SMALL_BLOCK_SIZE = 64;   // 1 << 6
 constexpr u64 LARGE_BLOCK_SIZE = 512;  // 1 << 9
 constexpr u64 BLOCK_RATE = 8;          // L_BLOCK_SIZE / S_BLOCK_SIZE
 
-template <template <class, class> class Container, class BlockType = u64,
-          class Alloc = std::allocator<BlockType>>
+template <template <class, class> class Container,
+          class Alloc = std::allocator<u64>>
 class bitvec {
 private:
-    Container<BlockType, Alloc> B_;  // Bit vector
+    Container<u64, Alloc> B_;  // Bit vector
     u64 size_;
 
 public:
@@ -31,8 +31,6 @@ public:
     }
 
     virtual ~bitvec() {}
-    // void clear();
-    // void set(std::size_t i, T v);
     void push_back(u8 v)
     {
         // size_ : 0, B_.size() : 0 -> 1(1-63まで条件を満たさない)
@@ -79,18 +77,17 @@ public:
     boost::optional<u8> operator[](u64 idx) const
     {
         if (idx >= size_) {
-            std::cerr << "Out of range\n";
             return boost::none;
         }
-        return (B_[idx / SMALL_BLOCK_SIZE]
-                & (0x1ULL << (idx % SMALL_BLOCK_SIZE)))
-               != 0;
+        u64 block_idx = idx / SMALL_BLOCK_SIZE;
+        u64 offset = idx % SMALL_BLOCK_SIZE;
+
+        return (B_[block_idx] & (0x1ULL << (offset))) != 0;
     }
 
-    boost::optional<BlockType> get_nth_block(u64 n)
+    boost::optional<u64> get_nth_block(u64 n)
     {
         if (n >= B_.size()) {
-            std::cerr << "Out of range\n";
             return boost::none;
         }
         return B_[n];
