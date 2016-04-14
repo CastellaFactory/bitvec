@@ -1,24 +1,30 @@
 #define BOOST_TEST_MODULE bitvec
 
 #include <bitvec/bitvec.hpp>
-#include <vector>
+#include <boost/container/vector.hpp>
+#include <boost/mpl/list.hpp>
 #include <boost/test/included/unit_test.hpp>
+#include <boost/test/test_case_template.hpp>
+#include <vector>
 
-BOOST_AUTO_TEST_CASE(initilize1)
+using bitvec_types = boost::mpl::list<bitvec::bitvec<std::vector>,
+                                      bitvec::bitvec<boost::container::vector>>;
+
+BOOST_AUTO_TEST_CASE_TEMPLATE(initilize1, T, bitvec_types)
 {
-    bitvec::bitvec<std::vector> bv;
+    T bv;
     BOOST_CHECK(bv.empty());
 }
 
-BOOST_AUTO_TEST_CASE(initilize2)
+BOOST_AUTO_TEST_CASE_TEMPLATE(initilize2, T, bitvec_types)
 {
-    bitvec::bitvec<std::vector> bv(65);
+    T bv(65);
     BOOST_CHECK_EQUAL(bv.size(), 65);
 }
 
-BOOST_AUTO_TEST_CASE(random_access)
+BOOST_AUTO_TEST_CASE_TEMPLATE(random_access, T, bitvec_types)
 {
-    bitvec::bitvec<std::vector> bv;
+    T bv;
     bv.push_back(0);
     bv.push_back(1);
     bv.push_back(1);
@@ -28,9 +34,9 @@ BOOST_AUTO_TEST_CASE(random_access)
     BOOST_CHECK(!bv[100]);
 }
 
-BOOST_AUTO_TEST_CASE(push_back)
+BOOST_AUTO_TEST_CASE_TEMPLATE(push_back, T, bitvec_types)
 {
-    bitvec::bitvec<std::vector> bv;
+    T bv;
     bv.push_back(0);
     bv.push_back(1);
     bv.push_back(1);

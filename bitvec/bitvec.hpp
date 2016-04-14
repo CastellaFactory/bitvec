@@ -1,11 +1,11 @@
 #ifndef BITVEC_BITVEC_HPP_INCLUDED
 #define BITVEC_BITVEC_HPP_INCLUDED
 
-#include <algorithm>
 #include <bitset>
 #include <bitvec/common_types.hpp>
 #include <boost/optional.hpp>
 #include <iostream>
+#include <memory>
 
 namespace bitvec {
 
@@ -13,11 +13,11 @@ constexpr u64 SMALL_BLOCK_SIZE = 64;   // 1 << 6
 constexpr u64 LARGE_BLOCK_SIZE = 512;  // 1 << 9
 constexpr u64 BLOCK_RATE = 8;          // L_BLOCK_SIZE / S_BLOCK_SIZE
 
-template <template <class...> class Container>
+template <template <class, class> class Container, class BlockType = u64,
+          class Alloc = std::allocator<BlockType>>
 class bitvec {
 private:
-    using block_type = u64;
-    Container<block_type> B_;  // Bit vector
+    Container<BlockType, Alloc> B_;  // Bit vector
     u64 size_;
 
 public:
@@ -87,7 +87,7 @@ public:
                != 0;
     }
 
-    boost::optional<block_type> get_nth_block(u64 n)
+    boost::optional<BlockType> get_nth_block(u64 n)
     {
         if (n >= B_.size()) {
             std::cerr << "Out of range\n";
