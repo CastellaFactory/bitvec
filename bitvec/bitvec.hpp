@@ -61,9 +61,6 @@ public:
 
     void push_back_bits(u64 x, u64 len)
     {
-        if ((size_ + len - 1) / SMALL_BLOCK_SIZE >= B_.size()) {
-            B_.push_back(0);
-        }
         u64 block_idx = size_ / SMALL_BLOCK_SIZE;
         u64 offset = size_ % SMALL_BLOCK_SIZE;
 
@@ -72,6 +69,7 @@ public:
 
         // 残りを次のブロックに
         if (offset + len - 1 >= SMALL_BLOCK_SIZE) {
+            B_.push_back(0);
             B_[block_idx + 1] |= x >> (SMALL_BLOCK_SIZE - offset);
         }
         size_ += len;
@@ -90,9 +88,7 @@ public:
     void PP(std::string blank = "  ")
     {
         std::cout << "size: " << size_ << std::endl;
-        std::cout << "blocks: "
-                  << (size_ + SMALL_BLOCK_SIZE - 1) / SMALL_BLOCK_SIZE
-                  << std::endl;
+        std::cout << "blocks: " << B_.size() << std::endl;
 
         std::cout << "[\n";
         for (auto& v : B_) {
