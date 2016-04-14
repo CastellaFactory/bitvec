@@ -3,8 +3,9 @@
 
 #include <algorithm>
 #include <bitset>
+#include <bitvec/common_types.hpp>
+#include <boost/optional.hpp>
 #include <iostream>
-#include "common_types.hpp"
 
 namespace bitvec {
 
@@ -75,26 +76,37 @@ public:
         size_ += len;
     }
 
-    u8 operator[](u64 idx) const
+    boost::optional<u8> operator[](u64 idx) const
     {
         if (idx >= size_) {
             std::cerr << "Out of range\n";
+            return boost::none;
         }
         return (B_[idx / SMALL_BLOCK_SIZE]
                 & (0x1ULL << (idx % SMALL_BLOCK_SIZE)))
                != 0;
     }
 
-    void PP(std::string blank = "  ")
+    boost::optional<block_type> get_nth_block(u64 n)
+    {
+        if (n >= B_.size()) {
+            std::cerr << "Out of range\n";
+            return boost::none;
+        }
+        return B_[n];
+    }
+
+    bool empty() const { return size_ == 0; }
+    u64 size() const { return size_; }
+    void PP()
     {
         std::cout << "size: " << size_ << std::endl;
         std::cout << "blocks: " << B_.size() << std::endl;
 
         std::cout << "[\n";
         for (auto& v : B_) {
-            std::cout << blank << "[ "
-                      << static_cast<std::bitset<SMALL_BLOCK_SIZE>>(v) << " ]"
-                      << std::endl;
+            std::cout << "  [ " << static_cast<std::bitset<SMALL_BLOCK_SIZE>>(v)
+                      << " ]" << std::endl;
         }
         std::cout << "]" << std::endl;
     }
