@@ -11,7 +11,7 @@ namespace bitvec {
 
 constexpr u64 SMALL_BLOCK_SIZE = 64;   // 1 << 6
 constexpr u64 LARGE_BLOCK_SIZE = 512;  // 1 << 9
-constexpr u64 BLOCK_RATE = 8;          // L_BLOCK_SIZE / S_BLOCK_SIZE
+constexpr u64 BLOCK_RATE = LARGE_BLOCK_SIZE / SMALL_BLOCK_SIZE;
 
 template <template <class, class> class Container,
           class Alloc = std::allocator<u64>>
